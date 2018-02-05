@@ -1,0 +1,19 @@
+{
+  "name": "auth",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node -r @537/config app.js"
+  },
+  "author": "kiernan <kiernan@537.io> (http://537.io/)",
+  "license": "MIT",
+  "dependencies": {
+    "@537/config": "0.0.4",
+    "@537/service": "0.0.3",
+    "aws-sdk": "^2.188.0",
+    "passport": "^0.4.0",
+    "passport-google-oauth20": "^1.0.0"
+  }
+}
