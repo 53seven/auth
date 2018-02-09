@@ -9,3 +9,4 @@ env:
     - PROTOCOL=http
     - PORT=3000
     - HOST=localhost
+    - DYNAMODB_URL=http://localhost:8000
