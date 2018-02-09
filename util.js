@@ -35,7 +35,6 @@ let put_token = async (token, refreshToken, profile, done) => {
 };
 
 let get_token = async (id, done) => {
-  console.log('getting dokenalkjalkjd')
   let user = await docClient.get({
     TableName: 'auth',
     Key: {
