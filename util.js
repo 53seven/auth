@@ -27,21 +27,37 @@ let require_auth = (req, res, next) => {
 };
 
 let put_token = async (token, refreshToken, profile, done) => {
-  await docClient.put({
-    TableName: 'auth',
-    Item: profile
-  }).promise();
-  done(null, profile);
+  try {
+    await docClient.put({
+      TableName: 'auth',
+      Item: profile
+    }).promise();
+    done(null, profile);
+  } catch (err) {
+    // lets just *assume* try-catch works
+    /* istanbul ignore next */
+    done(err);
+  }
 };
 
 let get_token = async (id, done) => {
-  let user = await docClient.get({
-    TableName: 'auth',
-    Key: {
-      id
+  try {
+    let user = await docClient.get({
+      TableName: 'auth',
+      Key: {
+        id
+      }
+    }).promise();
+    if (!user) {
+      done(null, false);
+    } else {
+      done(null, user.Item);
     }
-  }).promise();
-  done(null, user.Item);
+  } catch (err) {
+    // lets just *assume* try-catch works
+    /* istanbul ignore next */
+    done(err);
+  }
 };
 
 let authorized_redirect = (req, res) => {

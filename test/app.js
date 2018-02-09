@@ -1,58 +1,60 @@
 /* global describe, it, before, after */
-const request = require('supertest');
-const expect = require('chai').expect;
-const path = require('path');
-const service = require('@537/service');
-const package = require('../package.json');
-const test_routes = require('./test_routes.js');
-const {routes, passport} = require('../auth');
-const {put_token, authorized_redirect} = require('../util');
-
+// mock AWS before loading up the routes
 const AWS = require('aws-sdk-mock');
 
 const id = 'this_is_an_alnum_id_1234567890';
 let dynamo_db = {
-  id: {
-    id,
-    name: '53seven'
+  [id]: {
+    Item: {
+      id,
+      name: '53seven'
+    }
   }
 };
 
-
-let app, agent;
-
-// global before and afters
-before(async () => {
-  app = await service.run(package, {
-    routes: {
-      '/': [routes, test_routes],
-    },
-    passport,
-    view_path: path.join(__dirname, 'views'),
-  });
-
-  AWS.mock('DynamoDB.DocumentClient', 'put', function(params, callback) {
-    dynamo_db[params.Item.id] = params.Item;
-    callback();
-  });
-
-  AWS.mock('DynamoDB.DocumentClient', 'get', function(params, callback) {
-    callback(null, dynamo_db[params.Key.id]);
-  });
-
-  agent = request.agent(app);
+AWS.mock('DynamoDB.DocumentClient', 'put', function(params, callback) {
+  dynamo_db[params.Item.id] = params.Item;
+  callback();
 });
 
-after((done) => {
-
-  AWS.restore('DynamoDB.DocumentClient');
-
-  app.close(() => {
-    done();
-  });
+AWS.mock('DynamoDB.DocumentClient', 'get', function(params, callback) {
+  callback(null, dynamo_db[params.Key.id]);
 });
 
 describe('auth', () => {
+
+  // move bootstrapping code inside describe so we can mock dynamodb
+  const request = require('supertest');
+  const expect = require('chai').expect;
+  const path = require('path');
+  const service = require('@537/service');
+  const package = require('../package.json');
+  const test_routes = require('./test_routes.js');
+  const {routes, passport} = require('../auth');
+  const {put_token, authorized_redirect} = require('../util');
+
+  let app, agent;
+
+  // global before and afters
+  before(async () => {
+    app = await service.run(package, {
+      routes: {
+        '/': [routes, test_routes],
+      },
+      passport,
+      view_path: path.join(__dirname, 'views'),
+    });
+
+    agent = request.agent(app);
+  });
+
+  after((done) => {
+    AWS.restore('DynamoDB.DocumentClient');
+    app.close(() => {
+      done();
+    });
+  });
+
   describe('GET', () => {
 
     it('should 401 if no auth tokens provided', () => {
