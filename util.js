@@ -18,7 +18,9 @@ let require_auth = (req, res, next) => {
     if (err) {
       return next(err);
     } else if (!user) {
-      return res.redirect(401, '/unauthorized');
+      let err = new Error('unauthorized');
+      err.status = 401;
+      return next(err);
     } else {
       req.user = user;
       return next();
@@ -60,13 +62,13 @@ let get_token = async (id, done) => {
   }
 };
 
-let authorized_redirect = (req, res) => {
-  res.redirect(`/authorized?apikey=${req.user.id}`);
+let authorized_response = (req, res) => {
+  res.json({apikey: req.user.id});
 };
 
 module.exports = {
   require_auth,
   put_token,
   get_token,
-  authorized_redirect
+  authorized_response
 };

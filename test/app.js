@@ -31,13 +31,13 @@ describe('auth', () => {
   const package = require('../package.json');
   const test_routes = require('./test_routes.js');
   const {routes, passport} = require('../auth');
-  const {put_token, authorized_redirect} = require('../util');
+  const {put_token, authorized_response} = require('../util');
 
   let app, agent;
 
   // global before and afters
   before(async () => {
-    app = await service.run(package, {
+    app = service.bootstrap(package, {
       routes: {
         '/': [routes, test_routes],
       },
@@ -48,24 +48,17 @@ describe('auth', () => {
     agent = request.agent(app);
   });
 
-  after((done) => {
+  after(() => {
     AWS.restore('DynamoDB.DocumentClient');
-    app.close(() => {
-      done();
-    });
   });
 
   describe('GET', () => {
 
     it('should 401 if no auth tokens provided', () => {
-      return agent.get('/authorized')
-        .expect(401)
-        .expect('Location', '/unauthorized');
+      return agent.get('/authorized').expect(401);
     });
     it('should 401 if bad auth token provided', () => {
-      return agent.get('/authorized?apikey=not_a_real_id')
-        .expect(401)
-        .expect('Location', '/unauthorized');
+      return agent.get('/authorized?apikey=not_a_real_id').expect(401);
     });
     it('should 200 if valid auth token provided', () => {
       return agent.get(`/authorized?apikey=${id}`).expect(200);
@@ -83,21 +76,20 @@ describe('auth', () => {
       });
     });
 
-    describe('authorized_redirect', () => {
-      it('should redirect to /authorized', (done) => {
+    describe('authorized_response', () => {
+      it('should return api token', (done) => {
         let req = {
           user: {
             id: 'foo'
           }
         };
         let res = {
-          redirect: (val) => {
-            expect(val).to.have.string('/authorized');
-            expect(val).to.have.string(req.user.id);
+          json: (val) => {
+            expect(val).to.have.property('apikey', req.user.id);
             done();
           }
         };
-        authorized_redirect(req, res);
+        authorized_response(req, res);
       });
     });
   });
