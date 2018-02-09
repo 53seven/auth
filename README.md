@@ -26,6 +26,12 @@ router.get('/secret', auth.require_auth, (req, res) => { ... });
 
 ```
 
+Will assume that you have two routes, specified elsewhere in your app:
+
+`/authorized` - what a user will be redirected to after successful oauth
+`/unauthorized` - what a user will be redirected to after unsuccessful authorization (on any route)
+
+
 License
 ===
 
