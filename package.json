@@ -2,7 +2,7 @@
   "name": "@537/auth",
   "version": "0.0.2",
   "description": "",
-  "main": "index.js",
+  "main": "auth.js",
   "scripts": {
     "test": "NODE_ENV=test npm run lint && npm run cover && npm run check-coverage",
     "lint": "./node_modules/.bin/eslint auth.js routes.js util.js lib/ test/",
