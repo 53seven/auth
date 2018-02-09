@@ -5,7 +5,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const LocalAPIKeyStrategy = require('passport-localapikey-update').Strategy;
 
-const {get_token, put_token, authorized_redirect} = require('./util');
+const {get_token, put_token, authorized_response} = require('./util');
 
 passport.use(new LocalAPIKeyStrategy(get_token));
 
@@ -26,7 +26,7 @@ if (process.env.GOOGLE_CLIENT_ID) {
   router.get(process.env.GOOGLE_CALLBACK_PATH, passport.authenticate('google', {
     failureRedirect: '/unauthorized',
     session: false
-  }), authorized_redirect);
+  }), authorized_response);
 }
 
 
