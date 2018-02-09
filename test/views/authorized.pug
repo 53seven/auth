@@ -1,0 +1,7 @@
+extends layout
+
+block content
+  .content
+    .lead
+      h1 !{JSON.stringify(user)}
+      a(href=`/secret?apikey=${user.id}`) go secret

@@ -4,16 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node -r @537/config app.js"
+    "test": "NODE_ENV=test npm run lint && npm run cover && npm run check-coverage",
+    "lint": "./node_modules/.bin/eslint app.js lib/ test/",
+    "cover": "NODE_ENV=test ./node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- --recursive test",
+    "view-coverage": "open ./coverage/lcov-report/index.html",
+    "check-coverage": "./node_modules/.bin/istanbul check-coverage --statements 100 --functions 100 --branches 100 --lines 100"
   },
   "author": "kiernan <kiernan@537.io> (http://537.io/)",
   "license": "MIT",
   "dependencies": {
     "@537/config": "0.0.4",
-    "@537/service": "0.0.3",
     "aws-sdk": "^2.188.0",
     "passport": "^0.4.0",
-    "passport-google-oauth20": "^1.0.0"
+    "passport-google-oauth20": "^1.0.0",
+    "passport-localapikey-update": "^0.6.0"
+  },
+  "devDependencies": {
+    "@537/service": "0.0.3",
+    "aws-sdk-mock": "^1.7.0",
+    "chai": "^4.1.2",
+    "eslint": "^4.17.0",
+    "istanbul": "^1.1.0-alpha.1",
+    "mocha": "^5.0.0",
+    "supertest": "^3.0.0"
   }
 }
