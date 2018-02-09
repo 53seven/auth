@@ -62,13 +62,13 @@ let get_token = async (id, done) => {
   }
 };
 
-let authorized_response = (req, res) => {
-  res.json({apikey: req.user.id});
+let authorized_redirect = (req, res) => {
+  res.redirect(`/authorized?apikey=${req.user.id}`);
 };
 
 module.exports = {
   require_auth,
   put_token,
   get_token,
-  authorized_response
+  authorized_redirect
 };

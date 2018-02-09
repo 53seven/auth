@@ -31,7 +31,7 @@ describe('auth', () => {
   const package = require('../package.json');
   const test_routes = require('./test_routes.js');
   const {routes, passport} = require('../auth');
-  const {put_token, authorized_response} = require('../util');
+  const {put_token, authorized_redirect} = require('../util');
 
   let app, agent;
 
@@ -76,20 +76,21 @@ describe('auth', () => {
       });
     });
 
-    describe('authorized_response', () => {
-      it('should return api token', (done) => {
+    describe('authorized_redirect', () => {
+      it('should redirect to /authorized', (done) => {
         let req = {
           user: {
             id: 'foo'
           }
         };
         let res = {
-          json: (val) => {
-            expect(val).to.have.property('apikey', req.user.id);
+          redirect: (val) => {
+            expect(val).to.have.string('/authorized');
+            expect(val).to.have.string(req.user.id);
             done();
           }
         };
-        authorized_response(req, res);
+        authorized_redirect(req, res);
       });
     });
   });
