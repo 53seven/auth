@@ -1,6 +1,8 @@
 @537/auth
 ===
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/53seven/auth.svg)](https://greenkeeper.io/)
+
 [![build status](https://travis-ci.org/53seven/auth.svg)](https://travis-ci.org/53seven/auth)
 
 A quick and dirty way to add authentication to your routes. Only supports google auth right now. Store auth tokens in DynamoDB.
