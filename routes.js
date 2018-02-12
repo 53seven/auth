@@ -13,18 +13,10 @@ passport.use(new LocalAPIKeyStrategy(get_token));
 /* istanbul ignore if */
 if (process.env.GOOGLE_CLIENT_ID) {
 
-  let callbackURL;
-
-  if (process.env.PORT) {
-    callbackURL = `${process.env.PROTOCOL}://${process.env.HOST}:${process.env.PORT}${process.env.GOOGLE_CALLBACK_PATH}`;
-  } else {
-    callbackURL = `${process.env.PROTOCOL}://${process.env.HOST}${process.env.GOOGLE_CALLBACK_PATH}`;
-  }
-
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL
+    callbackURL: process.env.GOOGLE_CALLBACK_URL
   }, put_token));
 
   router.get('/auth/google', passport.authenticate('google', {
@@ -32,7 +24,7 @@ if (process.env.GOOGLE_CLIENT_ID) {
     session: false
   }));
 
-  router.get(process.env.GOOGLE_CALLBACK_PATH, passport.authenticate('google', {
+  router.get('/auth/google/callback', passport.authenticate('google', {
     failureRedirect: '/unauthorized',
     session: false
   }), authorized_redirect);
