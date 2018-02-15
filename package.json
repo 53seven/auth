@@ -20,7 +20,7 @@
     "passport-localapikey-update": "^0.6.0"
   },
   "devDependencies": {
-    "@537/service": "0.0.7",
+    "@537/service": "0.0.8",
     "aws-sdk-mock": "^1.7.0",
     "chai": "^4.1.2",
     "eslint": "^4.17.0",
