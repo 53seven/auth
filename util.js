@@ -78,7 +78,7 @@ let find_by_service_id = async (service_id) => {
 
   let res = await docClient.scan(query).promise();
 
-  return res[0];
+  return res.Items[0];
 };
 
 let get_token = async (id, done) => {

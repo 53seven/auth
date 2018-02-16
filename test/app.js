@@ -29,7 +29,7 @@ AWS.mock('DynamoDB.DocumentClient', 'scan', function(params, callback) {
   }).find((el) => {
     return el.Item.service_id === params.ExpressionAttributeValues[':sid'];
   });
-  callback(null, [out]);
+  callback(null, {Items: [out ? out.Item : undefined]});
 });
 
 describe('auth', () => {
@@ -81,16 +81,24 @@ describe('auth', () => {
       it('should update existing profiles', (done) => {
         let user = {id: service_id, name: 'bye'};
         put_token('token', 'refresh_token', user, (err, obj) => {
-          expect(user).to.deep.equal(obj.profile);
-          done();
+          try {
+            expect(user).to.deep.equal(obj.profile);
+            done();
+          } catch(err) {
+            done(err);
+          }
         });
       });
 
       it('should create new profiles', (done) => {
         let user = {id: 'facebook-thing', name: 'bye'};
         put_token('token', 'refresh_token', user, (err, obj) => {
-          expect(user).to.deep.equal(obj.profile);
-          done();
+          try {
+            expect(user).to.deep.equal(obj.profile);
+            done();
+          } catch(err) {
+            done(err);
+          }
         });
       });
     });
