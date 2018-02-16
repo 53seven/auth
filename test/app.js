@@ -3,22 +3,33 @@
 const AWS = require('aws-sdk-mock');
 
 const id = 'this_is_an_alnum_id_1234567890';
+const service_id = 'google-id';
 let dynamo_db = {
   [id]: {
     Item: {
       id,
+      service_id,
       name: '53seven'
     }
   }
 };
 
 AWS.mock('DynamoDB.DocumentClient', 'put', function(params, callback) {
-  dynamo_db[params.Item.id] = params.Item;
+  dynamo_db[params.Item.id] = {Item: params.Item};
   callback();
 });
 
 AWS.mock('DynamoDB.DocumentClient', 'get', function(params, callback) {
   callback(null, dynamo_db[params.Key.id]);
+});
+
+AWS.mock('DynamoDB.DocumentClient', 'scan', function(params, callback) {
+  let out = Object.keys(dynamo_db).map((k) => {
+    return dynamo_db[k];
+  }).find((el) => {
+    return el.Item.service_id === params.ExpressionAttributeValues[':sid'];
+  });
+  callback(null, [out]);
 });
 
 describe('auth', () => {
@@ -67,10 +78,18 @@ describe('auth', () => {
 
   describe('Unit Tests', () => {
     describe('put_token', () => {
-      it('should pass errors through to middleware', (done) => {
-        let user = {id: 'hi', name: 'bye'};
-        put_token('token', 'refresh_token', user, (err, profile) => {
-          expect(user).to.deep.equal(profile);
+      it('should update existing profiles', (done) => {
+        let user = {id: service_id, name: 'bye'};
+        put_token('token', 'refresh_token', user, (err, obj) => {
+          expect(user).to.deep.equal(obj.profile);
+          done();
+        });
+      });
+
+      it('should create new profiles', (done) => {
+        let user = {id: 'facebook-thing', name: 'bye'};
+        put_token('token', 'refresh_token', user, (err, obj) => {
+          expect(user).to.deep.equal(obj.profile);
           done();
         });
       });

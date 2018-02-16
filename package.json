@@ -17,7 +17,8 @@
     "aws-sdk": "^2.188.0",
     "passport": "^0.4.0",
     "passport-google-oauth20": "^1.0.0",
-    "passport-localapikey-update": "^0.6.0"
+    "passport-localapikey-update": "^0.6.0",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "@537/service": "0.0.4",
