@@ -39,7 +39,6 @@ describe('auth', () => {
   const expect = require('chai').expect;
   const path = require('path');
   const service = require('@537/service');
-  const package = require('../package.json');
   const test_routes = require('./test_routes.js');
   const {routes, passport} = require('../auth');
   const {put_token, authorized_redirect} = require('../util');
@@ -48,7 +47,7 @@ describe('auth', () => {
 
   // global before and afters
   before(async () => {
-    app = service.bootstrap(package, {
+    app = service.bootstrap({
       routes: {
         '/': [routes, test_routes],
       },
