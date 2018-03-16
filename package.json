@@ -21,7 +21,7 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "@537/service": "0.1.0",
+    "@537/service": "0.1.1",
     "aws-sdk-mock": "^1.7.0",
     "chai": "^4.1.2",
     "eslint": "^4.17.0",
